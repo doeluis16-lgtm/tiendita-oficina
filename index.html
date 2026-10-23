@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tiendita de Oficina TI</title>
+  <title>Tiendita TI - Control de Inventario & Ventas</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- SheetJS para exportar Excel -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen selection:bg-indigo-500 selection:text-white">
 
@@ -23,8 +21,8 @@
         <div class="w-16 h-16 bg-gradient-to-tr from-indigo-600 to-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-indigo-500/30 text-3xl">
           🏪
         </div>
-        <h1 class="text-2xl font-black text-white tracking-tight">Tiendita de Oficina</h1>
-        <p class="text-xs text-slate-400 mt-1">Ingresa credenciales del sistema TI</p>
+        <h1 class="text-2xl font-black text-white tracking-tight">Tiendita TI</h1>
+        <p class="text-xs text-slate-400 mt-1">Selecciona el perfil de acceso</p>
       </div>
 
       <form onsubmit="event.preventDefault(); validarLogin();" class="space-y-4">
@@ -32,7 +30,7 @@
           <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Usuario</label>
           <div class="relative">
             <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
-            <input type="text" id="login-user" placeholder="Ej. Systemas" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
+            <input type="text" id="login-user" placeholder="Systemas / General" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
           </div>
         </div>
 
@@ -49,7 +47,7 @@
         </div>
 
         <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-600/30 transition text-sm flex items-center justify-center space-x-2">
-          <span>Iniciar Sesión</span>
+          <span>Ingresar al Sistema</span>
           <i class="fa-solid fa-arrow-right text-xs"></i>
         </button>
       </form>
@@ -67,14 +65,12 @@
             🏪
           </div>
           <div>
-            <h1 class="text-base font-bold text-white leading-tight">Tiendita TI</h1>
-            <p class="text-[11px] text-emerald-400 font-semibold flex items-center">
-              <span class="w-2 h-2 bg-emerald-400 rounded-full mr-1.5 animate-pulse"></span>En línea
-            </p>
+            <h1 class="text-base font-bold text-white leading-tight" id="header-titulo">Tiendita TI</h1>
+            <p id="header-perfil-badge" class="text-[11px] font-semibold flex items-center"></p>
           </div>
         </div>
         <div class="flex items-center space-x-2">
-          <button onclick="abrirModalUsuario()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-2.5 py-1.5 rounded-xl transition flex items-center shadow-md">
+          <button id="btn-add-user" onclick="abrirModalUsuario()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-2.5 py-1.5 rounded-xl transition flex items-center shadow-md">
             <i class="fa-solid fa-user-plus mr-1"></i>+User
           </button>
           <button onclick="cerrarSesion()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded-xl transition border border-slate-700">
@@ -89,25 +85,25 @@
       <div class="max-w-md mx-auto">
         <div class="flex justify-between items-center mb-2">
           <label class="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">
-            <i class="fa-solid fa-user-check mr-1"></i>¿Quién está comprando?
+            <i class="fa-solid fa-user-check mr-1"></i>Comprador Activo
           </label>
           <span id="label-comprador-activo" class="text-xs font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20"></span>
         </div>
         <div id="lista-compradores" class="flex space-x-2 overflow-x-auto pb-1 scrollbar-none">
-          <!-- Render dinámico de botones de usuario -->
+          <!-- Render dinámico -->
         </div>
       </div>
     </section>
 
     <!-- NAVEGACIÓN -->
-    <nav class="max-w-md mx-auto p-3 grid grid-cols-2 gap-2 text-center text-xs font-bold">
+    <nav id="nav-modulos" class="max-w-md mx-auto p-3 grid grid-cols-2 gap-2 text-center text-xs font-bold">
       <button onclick="cambiarPestana('catalogo')" id="tab-catalogo" class="py-2.5 px-3 rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 transition flex items-center justify-center space-x-2">
         <i class="fa-solid fa-store text-sm"></i>
         <span>Catálogo & Registro</span>
       </button>
       <button onclick="cambiarPestana('cuentas')" id="tab-cuentas" class="py-2.5 px-3 rounded-xl bg-slate-900 text-slate-400 hover:text-white transition flex items-center justify-center space-x-2 border border-slate-800">
-        <i class="fa-solid fa-file-excel text-sm"></i>
-        <span>Cuentas & Excel</span>
+        <i class="fa-solid fa-table text-sm"></i>
+        <span>Ver Google Sheets</span>
       </button>
     </nav>
 
@@ -119,28 +115,28 @@
         <!-- BUSCADOR -->
         <div class="relative">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
-          <input type="text" id="input-busqueda" oninput="filtrarProductos()" placeholder="Buscar producto (ej. Cocas, Papas...)" class="w-full bg-slate-900 border border-slate-800 rounded-xl py-2.5 pl-9 pr-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition">
+          <input type="text" id="input-busqueda" oninput="filtrarProductos()" placeholder="Buscar producto..." class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-9 pr-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition">
         </div>
 
         <!-- GRID DE ARTÍCULOS -->
         <div id="grid-catalogo" class="grid grid-cols-2 gap-2.5">
-          <!-- Render dinámico de tarjetas de productos -->
+          <!-- Render dinámico -->
         </div>
       </section>
 
-      <!-- PESTAÑA 2: CUENTAS Y EXCEL -->
+      <!-- PESTAÑA 2: DEUDAS Y ENLACE A GOOGLE SHEETS (SOLO SYSTEMAS) -->
       <section id="sec-cuentas" class="hidden space-y-4">
         <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-sm font-bold text-white">Resumen de Deudas</h2>
-            <button onclick="exportarExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 px-3 rounded-xl shadow-lg shadow-emerald-600/20 flex items-center space-x-1.5 transition">
+            <button onclick="abrirGoogleSheets()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 px-3 rounded-xl shadow-lg shadow-emerald-600/20 flex items-center space-x-1.5 transition">
               <i class="fa-solid fa-file-excel text-sm"></i>
-              <span>Exportar .xlsx</span>
+              <span>Abrir Hoja de Cálculo ↗</span>
             </button>
           </div>
 
           <div id="contenedor-deudas" class="space-y-2.5">
-            <!-- Render dinámico de deudas -->
+            <!-- Render de deudas -->
           </div>
 
           <button onclick="reiniciarSemana()" class="w-full mt-4 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center space-x-1.5">
@@ -153,14 +149,14 @@
     </main>
   </div>
 
-  <!-- NOTIFICACIÓN TIPO TOAST AL REGISTRAR -->
+  <!-- NOTIFICACIÓN TOAST AL REGISTRAR -->
   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-800 border border-indigo-500/50 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 z-50 transition-all duration-300 opacity-0 pointer-events-none translate-y-4 max-w-xs w-full">
     <div class="w-9 h-9 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl flex items-center justify-center text-lg flex-shrink-0">
       <i class="fa-solid fa-plus"></i>
     </div>
     <div class="overflow-hidden text-xs">
       <p id="toast-prod" class="font-bold text-white truncate">Producto</p>
-      <p id="toast-usr" class="text-slate-400 truncate">Asignado a Luis E.</p>
+      <p id="toast-usr" class="text-slate-400 truncate">Asignado</p>
     </div>
   </div>
 
@@ -171,7 +167,7 @@
         <i class="fa-solid fa-xmark text-lg"></i>
       </button>
       <h3 class="text-base font-bold text-white mb-1"><i class="fa-solid fa-user-plus text-indigo-400 mr-2"></i>Nuevo Integrante</h3>
-      <p class="text-xs text-slate-400 mb-4">Ingresa el nombre de la persona</p>
+      <p class="text-xs text-slate-400 mb-4">Ingresa el nombre del integrante de oficina</p>
       
       <input type="text" id="input-nuevo-usuario" placeholder="Ej. Roberto, Sofía..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white text-xs focus:outline-none focus:border-indigo-500 mb-4">
 
@@ -182,64 +178,98 @@
     </div>
   </div>
 
-  <!-- SCRIPT CON LÓGICA DE LA APLICACIÓN -->
+  <!-- SCRIPT LÓGICA CON APPS SCRIPT VINCULADO -->
   <script>
-    // LISTA DE EMPLEADOS CON LUIS E. INCLUIDO
-    const empleadosIniciales = ["Luis E.", "Lalo", "Javi", "David", "Ivan", "cesar", "Beto", "mario", "Venta Pública"];
+    // URL VINCULADA DE TU GOOGLE APPS SCRIPT (VERSIÓN 5)
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTYFT23AjUJ0nM5-0LG4Zb1otsPv4iBKbl_xXZT6BwjkMCfQ_BUfNahjcojvHgwKBpyQ/exec";
     
-    // CATÁLOGO DE PRODUCTOS
-    const productosIniciales = [
-      { id: "PROD-001", nombre: "Cocas", precio: 18.00, imagen: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400" },
-      { id: "PROD-002", nombre: "Papas", precio: 22.00, imagen: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400" },
-      { id: "PROD-003", nombre: "Maruchan", precio: 18.00, imagen: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400" },
-      { id: "PROD-004", nombre: "Palomitas", precio: 15.00, imagen: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=400" },
-      { id: "PROD-005", nombre: "Chocoroles", precio: 20.00, imagen: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400" },
-      { id: "PROD-006", nombre: "Peñafiel", precio: 16.00, imagen: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=400" },
-      { id: "PROD-007", nombre: "M&M's", precio: 22.00, imagen: "https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=400" },
-      { id: "PROD-008", nombre: "Snickers", precio: 20.00, imagen: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=400" },
-      { id: "PROD-009", nombre: "Milky Way", precio: 20.00, imagen: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=400" },
-      { id: "PROD-010", nombre: "Mamuts", precio: 12.00, imagen: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400" },
-      { id: "PROD-011", nombre: "Lechitas", precio: 14.00, imagen: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400" },
-      { id: "PROD-012", nombre: "Perrier", precio: 30.00, imagen: "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=400" },
-      { id: "PROD-013", nombre: "Helado", precio: 25.00, imagen: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400" }
+    // ENLACE A TU HOJA DE CÁLCULO DE GOOGLE
+    const HOJA_CALCULO_URL = "https://docs.google.com/spreadsheets/d/1ISEQX_wi9gIC1jo4qzPvrAheStS9goFfx8p83MoUSKQ/edit?gid=1627080640#gid=1627080640";
+
+    const empleadosOficina = [
+      "Diego", "Lalo", "Beto", "Javi", "Nalgón", "David", "Luis (noche)", "Luis", "Mario", "Iván", "Lalo Jr."
     ];
 
-    let empleados = JSON.parse(localStorage.getItem("tiendita_empleados")) || empleadosIniciales;
+    const productosIniciales = [
+      { id: "PROD-001", nombre: "Chocolates", precioUnitario: 13.70, precioVPG: 20.00, imagen: "https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=400" },
+      { id: "PROD-002", nombre: "Agua Mineral Peñafiel Adas", precioUnitario: 10.70, precioVPG: 15.00, imagen: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=400" },
+      { id: "PROD-003", nombre: "Coca-Cola Pet 355 ml", precioUnitario: 14.80, precioVPG: 17.00, imagen: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400" },
+      { id: "PROD-004", nombre: "Schweppes Mocktails", precioUnitario: 16.50, precioVPG: 20.00, imagen: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400" },
+      { id: "PROD-005", nombre: "Paleta Helada", precioUnitario: 13.80, precioVPG: 20.00, imagen: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400" },
+      { id: "PROD-006", nombre: "Agua Mineral Perrier", precioUnitario: 22.50, precioVPG: 25.00, imagen: "https://images.unsplash.com/photo-1560023907-5f310c80557f?w=400" },
+      { id: "PROD-007", nombre: "Chocoroles Mini", precioUnitario: 6.40, precioVPG: 8.00, imagen: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400" },
+      { id: "PROD-008", nombre: "Häagen-Dazs 81g", precioUnitario: 22.50, precioVPG: 30.00, imagen: "https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=400" },
+      { id: "PROD-009", nombre: "Botanas Sabritas", precioUnitario: 10.10, precioVPG: 15.00, imagen: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400" },
+      { id: "PROD-010", nombre: "Galletas Gamesa Peke Pakes", precioUnitario: 3.40, precioVPG: 5.00, imagen: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400" },
+      { id: "PROD-011", nombre: "Mini Pizzas", precioUnitario: 3.60, precioVPG: 5.00, imagen: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400" }
+    ];
+
+    let empleados = JSON.parse(localStorage.getItem("tiendita_empleados")) || empleadosOficina;
     let productos = JSON.parse(localStorage.getItem("tiendita_productos")) || productosIniciales;
     let consumos = JSON.parse(localStorage.getItem("tiendita_consumos")) || [];
-    let compradorActivo = empleados[0] || "Luis E.";
+    let rolActual = sessionStorage.getItem("tiendita_rol") || null;
+    let compradorActivo = "";
 
-    // INICIALIZAR SESIÓN Y VISTAS
     document.addEventListener("DOMContentLoaded", () => {
       if (sessionStorage.getItem("tiendita_session") === "true") {
-        document.getElementById("pantalla-login").classList.add("hidden");
-        document.getElementById("app-principal").classList.remove("hidden");
+        aplicarPermisosRol();
       }
-      renderizarCompradores();
-      renderizarGridCatalogo(productos);
-      renderizarDeudas();
     });
 
-    // LOGIN & SESIÓN
     function validarLogin() {
       const u = document.getElementById("login-user").value.trim();
       const p = document.getElementById("login-pass").value.trim();
       
       if (u === "Systemas" && p === "TiendaTI2026") {
         sessionStorage.setItem("tiendita_session", "true");
-        document.getElementById("pantalla-login").classList.add("hidden");
-        document.getElementById("app-principal").classList.remove("hidden");
+        sessionStorage.setItem("tiendita_rol", "systemas");
+        aplicarPermisosRol();
+      } else if (u === "General" && p === "Tomza26") {
+        sessionStorage.setItem("tiendita_session", "true");
+        sessionStorage.setItem("tiendita_rol", "general");
+        aplicarPermisosRol();
       } else {
         document.getElementById("login-error").classList.remove("hidden");
       }
     }
 
+    function aplicarPermisosRol() {
+      rolActual = sessionStorage.getItem("tiendita_rol");
+      document.getElementById("pantalla-login").classList.add("hidden");
+      document.getElementById("app-principal").classList.remove("hidden");
+
+      const badge = document.getElementById("header-perfil-badge");
+
+      if (rolActual === "systemas") {
+        badge.className = "text-[11px] font-semibold text-indigo-400";
+        badge.innerHTML = `<span class="w-2 h-2 bg-indigo-400 rounded-full mr-1.5 animate-pulse"></span>Modo Systemas`;
+        
+        compradorActivo = empleados[0] || "Diego";
+        document.getElementById("btn-add-user").classList.remove("hidden");
+        document.getElementById("nav-modulos").classList.remove("hidden");
+        
+        renderizarCompradoresSystemas();
+      } else {
+        badge.className = "text-[11px] font-semibold text-amber-400";
+        badge.innerHTML = `<span class="w-2 h-2 bg-amber-400 rounded-full mr-1.5 animate-pulse"></span>Venta General (Público)`;
+        
+        compradorActivo = "VPG";
+        document.getElementById("btn-add-user").classList.add("hidden");
+        document.getElementById("nav-modulos").classList.add("hidden");
+        
+        renderizarCompradorGeneral();
+        cambiarPestana('catalogo');
+      }
+
+      renderizarGridCatalogo(productos);
+      renderizarDeudas();
+    }
+
     function cerrarSesion() {
-      sessionStorage.removeItem("tiendita_session");
+      sessionStorage.clear();
       location.reload();
     }
 
-    // SONIDO BEEP AL COBRAR
     function reproducirBeep() {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -255,8 +285,7 @@
       } catch (e) {}
     }
 
-    // COMPRADOR ACTIVO
-    function renderizarCompradores() {
+    function renderizarCompradoresSystemas() {
       const container = document.getElementById("lista-compradores");
       document.getElementById("label-comprador-activo").innerText = compradorActivo;
       
@@ -267,64 +296,94 @@
       `).join("");
     }
 
-    function seleccionarComprador(nombre) {
-      compradorActivo = nombre;
-      renderizarCompradores();
+    function renderizarCompradorGeneral() {
+      const container = document.getElementById("lista-compradores");
+      document.getElementById("label-comprador-activo").innerText = "VPG (Venta Público)";
+      container.innerHTML = `
+        <div class="px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+          🛒 Venta Público General (VPG)
+        </div>
+      `;
     }
 
-    // REGISTRAR CONSUMO DE PRODUCTO
+    function seleccionarComprador(nombre) {
+      if (rolActual === "general") return;
+      compradorActivo = nombre;
+      renderizarCompradoresSystemas();
+      renderizarGridCatalogo(productos);
+    }
+
     function registrarConsumo(producto) {
       reproducirBeep();
       if (navigator.vibrate) navigator.vibrate(80);
 
-      consumos.push({
-        empleado: compradorActivo,
-        productoId: producto.id,
-        nombreProducto: producto.nombre,
-        precio: producto.precio,
-        fecha: new Date().toISOString()
-      });
+      const esVPG = (rolActual === "general" || compradorActivo === "VPG");
+      const precioAplicado = esVPG ? producto.precioVPG : producto.precioUnitario;
 
+      const nuevoRegistro = {
+        comprador: compradorActivo,
+        productoId: producto.id,
+        producto: producto.nombre,
+        precio: precioAplicado,
+        tipoTarifa: esVPG ? "VPG" : "Empleado",
+        fecha: new Date().toISOString()
+      };
+
+      consumos.push(nuevoRegistro);
       localStorage.setItem("tiendita_consumos", JSON.stringify(consumos));
       renderizarDeudas();
-      mostrarToast(producto.nombre, compradorActivo);
+      mostrarToast(producto.nombre, compradorActivo, precioAplicado);
+
+      // Sincronización automática a Google Sheets vía Apps Script
+      if (GOOGLE_SCRIPT_URL) {
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(nuevoRegistro)
+        }).catch(err => console.log("Error de conexión:", err));
+      }
     }
 
-    // TOAST NOTIFICACIÓN
-    let timerToast = null;
-    function mostrarToast(prodNombre, usrNombre) {
+    function mostrarToast(prodNombre, usrNombre, precio) {
       const toast = document.getElementById("toast");
       document.getElementById("toast-prod").innerText = prodNombre;
-      document.getElementById("toast-usr").innerText = `+$${productos.find(p=>p.nombre===prodNombre).precio.toFixed(2)} ➔ ${usrNombre}`;
+      document.getElementById("toast-usr").innerText = `+$${precio.toFixed(2)} ➔ ${usrNombre}`;
 
       toast.classList.remove("opacity-0", "pointer-events-none", "translate-y-4");
       
-      clearTimeout(timerToast);
-      timerToast = setTimeout(() => {
+      setTimeout(() => {
         toast.classList.add("opacity-0", "pointer-events-none", "translate-y-4");
       }, 2000);
     }
 
-    // RENDERIZAR GRID DE PRODUCTOS
     function renderizarGridCatalogo(lista) {
       const container = document.getElementById("grid-catalogo");
-      container.innerHTML = lista.map(p => `
-        <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-2.5 flex flex-col justify-between hover:border-indigo-500/50 transition shadow-lg group">
-          <div class="relative w-full h-24 rounded-xl overflow-hidden mb-2 bg-slate-950">
-            <img src="${p.imagen}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-            <button onclick="editarPrecio('${p.id}')" class="absolute top-1.5 right-1.5 bg-slate-950/80 text-emerald-400 text-[10px] font-black px-2 py-0.5 rounded-lg border border-emerald-500/30 backdrop-blur-sm">
-              $${p.precio.toFixed(2)} ✏️
-            </button>
+      const esVPG = (rolActual === "general");
+
+      container.innerHTML = lista.map(p => {
+        const precioMostrado = esVPG ? p.precioVPG : p.precioUnitario;
+        return `
+          <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-2.5 flex flex-col justify-between hover:border-indigo-500/50 transition shadow-lg group">
+            <div class="relative w-full h-24 rounded-xl overflow-hidden mb-2 bg-slate-950">
+              <img src="${p.imagen}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              <div class="absolute top-1.5 right-1.5 bg-slate-950/80 ${esVPG ? 'text-amber-400 border-amber-500/30' : 'text-emerald-400 border-emerald-500/30'} text-[10px] font-black px-2 py-0.5 rounded-lg border backdrop-blur-sm">
+                $${precioMostrado.toFixed(2)}
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-white leading-tight mb-1 truncate">${p.nombre}</p>
+              <p class="text-[10px] text-slate-500 mb-2">
+                ${esVPG ? '<span class="text-amber-400 font-semibold">Precio VPG</span>' : '<span class="text-slate-400">Precio Empleado</span>'}
+              </p>
+              <button onclick="registrarConsumo(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="w-full bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 font-bold py-1.5 rounded-xl text-xs transition flex items-center justify-center space-x-1">
+                <i class="fa-solid fa-cart-plus text-[10px]"></i>
+                <span>Agregar</span>
+              </button>
+            </div>
           </div>
-          <div>
-            <p class="text-xs font-bold text-white leading-tight mb-2 truncate">${p.nombre}</p>
-            <button onclick="registrarConsumo(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="w-full bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 font-bold py-1.5 rounded-xl text-xs transition flex items-center justify-center space-x-1">
-              <i class="fa-solid fa-cart-plus text-[10px]"></i>
-              <span>Agregar</span>
-            </button>
-          </div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
     }
 
     function filtrarProductos() {
@@ -333,19 +392,8 @@
       renderizarGridCatalogo(filtrados);
     }
 
-    function editarPrecio(id) {
-      const p = productos.find(item => item.id === id);
-      if (!p) return;
-      const nuevo = prompt(`Nuevo precio para ${p.nombre}:`, p.precio);
-      if (nuevo !== null && !isNaN(parseFloat(nuevo))) {
-        p.precio = parseFloat(nuevo);
-        localStorage.setItem("tiendita_productos", JSON.stringify(productos));
-        renderizarGridCatalogo(productos);
-      }
-    }
-
-    // RENDERIZAR DEUDAS Y EXCEL
     function renderizarDeudas() {
+      if (rolActual === "general") return;
       const container = document.getElementById("contenedor-deudas");
       let totalGeneral = 0;
 
@@ -377,38 +425,10 @@
       `;
     }
 
-    function exportarExcel() {
-      const datosExcel = [
-        ["Nombre del Empleado", "Productos Consumidos", "Cantidad Total", "Total a Pagar ($)"]
-      ];
-
-      let sumaOficina = 0;
-
-      empleados.forEach(emp => {
-        const misConsumos = consumos.filter(c => c.empleado === emp);
-        const totalEmp = misConsumos.reduce((sum, c) => sum + c.precio, 0);
-        sumaOficina += totalEmp;
-
-        const conteo = {};
-        misConsumos.forEach(c => {
-          conteo[c.nombreProducto] = (conteo[c.nombreProducto] || 0) + 1;
-        });
-        const listaTexto = Object.entries(conteo).map(([nom, cant]) => `${cant}x ${nom}`).join(", ") || "Ninguno";
-
-        datosExcel.push([emp, listaTexto, misConsumos.length, totalEmp]);
-      });
-
-      datosExcel.push(["", "", "", ""]);
-      datosExcel.push(["TOTAL GENERAL DE LA OFICINA", "", "", sumaOficina]);
-
-      const hoja = XLSX.utils.aoa_to_sheet(datosExcel);
-      const libro = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(libro, hoja, "Cierre Semanal");
-
-      XLSX.writeFile(libro, `Cierre_Tiendita_TI_${new Date().toISOString().slice(0,10)}.xlsx`);
+    function abrirGoogleSheets() {
+      window.open(HOJA_CALCULO_URL, "_blank");
     }
 
-    // MODAL USUARIO NUEVO
     function abrirModalUsuario() {
       document.getElementById("input-nuevo-usuario").value = "";
       document.getElementById("modal-usuario").classList.remove("hidden");
@@ -425,14 +445,14 @@
         empleados.push(nombre);
         localStorage.setItem("tiendita_empleados", JSON.stringify(empleados));
         compradorActivo = nombre;
-        renderizarCompradores();
+        renderizarCompradoresSystemas();
         renderizarDeudas();
       }
       cerrarModalUsuario();
     }
 
-    // CAMBIO DE PESTAÑAS & REINICIO
     function cambiarPestana(p) {
+      if (rolActual === "general" && p === "cuentas") return;
       document.getElementById("sec-catalogo").classList.toggle("hidden", p !== "catalogo");
       document.getElementById("sec-cuentas").classList.toggle("hidden", p !== "cuentas");
 
@@ -446,7 +466,7 @@
     }
 
     function reiniciarSemana() {
-      if (confirm("¿Confirmas reiniciar todas las deudas acumuladas a $0.00?")) {
+      if (confirm("¿Confirmas reiniciar todas las deudas acumuladas a $0.00 en la app?")) {
         consumos = [];
         localStorage.removeItem("tiendita_consumos");
         renderizarDeudas();
